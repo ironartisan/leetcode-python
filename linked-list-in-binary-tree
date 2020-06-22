@@ -1,0 +1,208 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1367. 二叉树中的列表"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "给你一棵以 root 为根的二叉树和一个 head 为第一个节点的链表。\n",
+    "\n",
+    "如果在二叉树中，存在一条一直向下的路径，且每个点的数值恰好一一对应以 head 为首的链表中每个节点的值，那么请你返回 True ，否则返回 False 。\n",
+    "\n",
+    "一直向下的路径的意思是：从树中某个节点开始，一直连续向下的路径。\n",
+    "\n",
+    " \n",
+    "\n",
+    "示例 1：\n",
+    "\n",
+    "\n",
+    "\n",
+    "输入：head = [4,2,8], root = [1,4,4,null,2,2,null,1,null,6,8,null,null,null,null,1,3]\n",
+    "输出：true\n",
+    "解释：树中蓝色的节点构成了与链表对应的子路径。\n",
+    "示例 2：\n",
+    "\n",
+    "\n",
+    "\n",
+    "输入：head = [1,4,2,6], root = [1,4,4,null,2,2,null,1,null,6,8,null,null,null,null,1,3]\n",
+    "输出：true\n",
+    "示例 3：\n",
+    "\n",
+    "输入：head = [1,4,2,6,8], root = [1,4,4,null,2,2,null,1,null,6,8,null,null,null,null,1,3]\n",
+    "输出：false\n",
+    "解释：二叉树中不存在一一对应链表的路径。\n",
+    " \n",
+    "\n",
+    "提示：\n",
+    "\n",
+    "二叉树和链表中的每个节点的值都满足 1 <= node.val <= 100 。\n",
+    "链表包含的节点数目在 1 到 100 之间。\n",
+    "二叉树包含的节点数目在 1 到 2500 之间。\n",
+    "\n",
+    "来源：力扣（LeetCode）\n",
+    "链接：https://leetcode-cn.com/problems/linked-list-in-binary-tree\n",
+    "著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Definition for singly-linked list.\n",
+    "class ListNode:\n",
+    "    def __init__(self, x):\n",
+    "        self.val = x\n",
+    "        self.next = None\n",
+    "        \n",
+    "class LinkList:\n",
+    "    def __init__(self):\n",
+    "        self.head=None\n",
+    "    def init(self, data):\n",
+    "        # 创建头结点\n",
+    "        self.head = ListNode(data[0])\n",
+    "        r=self.head\n",
+    "        p = self.head\n",
+    "        # 逐个为 data 内的数据创建结点, 建立链表\n",
+    "        for i in data[1:]:\n",
+    "            node = ListNode(i)\n",
+    "            p.next = node\n",
+    "            p = p.next\n",
+    "        return r\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 解法1\n",
+    "解题思路\n",
+    "本题是一个结点匹配的问题，如果第一个结点匹配，那么剩下的交给递归处理验证是否匹配问题即可，因此想到用递归来解决。\n",
+    "\n",
+    "算法\n",
+    "递归函数 helper(head,root)helper(head, root)helper(head,root) 主要分两步解决：\n",
+    "\n",
+    "链表的头结点 headheadhead 和二叉树中的某个结点 rootrootroot 匹配；\n",
+    "链表的下一个结点 head.nexthead.nexthead.next 与结点 root.leftroot.leftroot.left 或 root.rightroot.rightroot.right 匹配。（递归）\n",
+    "\n",
+    "值得注意的是，如何在递归前首先找到图中第一个匹配的结点 呢？这时需要从左右子树寻找与 headheadhead 匹配的点，\n",
+    "即递归调用原函数 isSubPath(head,root.left)isSubPath(head, root.left)isSubPath(head,root.left) 或 isSubPath(head,root.right)isSubPath(head, root.right)isSubPath(head,root.right)。\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "\n",
+    "    def isSubPath(self, head: ListNode, root: TreeNode) -> bool:\n",
+    "        if not root: \n",
+    "            return False\n",
+    "        return self.helper(head, root) or self.isSubPath(head, root.left) or self.isSubPath(head, root.right) \n",
+    "    def helper(self, head, root):\n",
+    "        if not head: \n",
+    "            return True\n",
+    "        if root and root.val != head.val or not root: \n",
+    "            return False\n",
+    "        return self.helper(head.next, root.left) or self.helper(head.next, root.right)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## test case"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": "[<__main__.ListNode at 0x7f4effc54a90>,\n <__main__.ListNode at 0x7f4effc54fd0>,\n <__main__.ListNode at 0x7f4effc54518>]"
+     },
+     "metadata": {},
+     "execution_count": 18
+    }
+   ],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# 解法２\n",
+    "# dfs"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# dfs 同时维护到达当前位置的路径即可，比较路径的尾部和目标序列是否一致\n",
+    "class Solution:\n",
+    "\n",
+    "    def dfs(self, root, path, target):\n",
+    "        if root is None:\n",
+    "            return False\n",
+    "\n",
+    "        path.append(root.val)\n",
+    "        if len(path) >= len(target) and target == path[-len(target):]:\n",
+    "            return True\n",
+    "\n",
+    "        ans = self.dfs(root.left, path, target) or self.dfs(root.right, path, target)\n",
+    "        path.pop(-1)\n",
+    "        return ans\n",
+    "\n",
+    "    def isSubPath(self, head: ListNode, root: TreeNode) -> bool:\n",
+    "        target = []\n",
+    "        while head:\n",
+    "            target.append(head.val)\n",
+    "            head = head.next\n",
+    "\n",
+    "        return self.dfs(root, [], target)\n",
+    "\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.7-final"
+  },
+  "orig_nbformat": 2,
+  "kernelspec": {
+   "name": "python36964bit50cab1bc22c540b8a794197aff8f365c",
+   "display_name": "Python 3.6.9 64-bit"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
